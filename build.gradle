@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'
+    implementation 'org.springframework.security:spring-security-crypto:5.7.1'
+    implementation 'io.github.bonigarcia:webdrivermanager:5.1.0'  // WebDriver Manager 추가
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.26.0'
+
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
