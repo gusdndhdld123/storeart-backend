@@ -57,7 +57,7 @@ public class NaverController {
         try {
             // ChromeDriver 초기화 설정
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--window-size=1920x1080");
+            options.addArguments( "--no-sandbox", "--disable-dev-shm-usage", "--window-size=1920x1080");
             if (webDriver == null) {
                 webDriver = new ChromeDriver(options);
             }
