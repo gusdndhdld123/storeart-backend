@@ -36,12 +36,19 @@ dependencies {
     // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'
     implementation 'org.springframework.security:spring-security-crypto:5.7.1'
-    implementation 'io.github.bonigarcia:webdrivermanager:5.1.0'  // WebDriver Manager 추가
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.9.2'
+    // WebDriver Manager 추가
+
     // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
-    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.26.0'
-
-
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.27.0'
+    //jwt의존성
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    //스프링 시큐리티
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {

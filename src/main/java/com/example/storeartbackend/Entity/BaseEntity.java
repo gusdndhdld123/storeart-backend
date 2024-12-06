@@ -5,18 +5,28 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@EntityListeners(value = {AuditingEntityListener.class})
-@MappedSuperclass
-@Getter @Setter
-public abstract class BaseEntity extends BaseTimeEntity{
-    @CreatedBy
-    @Column(updatable = false)
-    private String createdBy;
+import java.time.LocalDateTime;
 
-    @LastModifiedBy
-    private String modifiedBy;
+
+@MappedSuperclass
+@EntityListeners(value = {AuditingEntityListener.class})
+@ToString
+@Getter
+public class BaseEntity {
+
+    @CreatedDate //테이블에 값을 입력할 때 사용
+    @Column(name = "regdate" , updatable = false) //updatable false= 업데이트시에 실행 X
+    private LocalDateTime regdate;
+
+    @LastModifiedDate //입력할 때마다 (수정할 때마다)
+    @Column(name = "moddate")
+    private LocalDateTime moddate;
+
 }

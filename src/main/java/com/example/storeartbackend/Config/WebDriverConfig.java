@@ -16,7 +16,11 @@ public class WebDriverConfig {
         if (driver == null) {
             ChromeOptions options = new ChromeOptions();
             options.addArguments( "--no-sandbox", "--window-size=1920x1080");
-            options.setBinary("/usr/bin/google-chrome-stable");  // 설치된 정확한 경로
+            options.addArguments("--disable-dev-shm-usage");
+//            options.addArguments("--headless");
+//            options.setBinary("/usr/bin/google-chrome-stable");  // 리눅스용 경로.
+
+            options.setBinary("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe");
             driver = new ChromeDriver(options);
             driver.manage().window().maximize();
         }
