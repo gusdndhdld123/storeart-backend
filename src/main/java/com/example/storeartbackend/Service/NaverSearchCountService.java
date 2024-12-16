@@ -132,7 +132,31 @@ public class NaverSearchCountService {
         // 새 데이터를 저장
         return naverSearchCountRepository.save(newEntity);
     }
+    public void handlegrade0(int userIdx, LocalDate currentDate) {
+        // 현재 날짜를 "yyyy-MM-dd" 형식으로 변환
+        String currentDateString = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
+        // userIdx와 currentDate로 검색
+        Optional<NaverSearchCountEntity> searchCountEntityOptional = naverSearchCountRepository.findSearchCountByUserIdxAndDate(userIdx, currentDateString);
+
+        if (searchCountEntityOptional.isPresent()) {
+            // 데이터가 존재하면, 해당 엔티티를 불러와서 maxSearch를 30으로 변경
+            NaverSearchCountEntity existingEntity = searchCountEntityOptional.get();
+            existingEntity.setMaxSearch(0);
+            naverSearchCountRepository.save(existingEntity);
+        } else {
+            // 데이터가 없으면, 오늘 날짜로 새 엔티티 생성 후 maxSearch를 30으로 설정하여 저장
+            NaverSearchCountEntity newEntity = new NaverSearchCountEntity();
+            newEntity.setUserIdx(userIdx);
+            newEntity.setDate(currentDateString);
+            newEntity.setMaxSearch(0); // maxSearch를 30으로 설정
+
+            // 필요한 다른 필드를 설정
+            newEntity.setSearchCount(0);  // 예시로 searchCount는 0으로 설정 (필요에 맞게 조정)
+
+            naverSearchCountRepository.save(newEntity);
+        }
+    }
     public void handlegrade1(int userIdx, LocalDate currentDate) {
         // 현재 날짜를 "yyyy-MM-dd" 형식으로 변환
         String currentDateString = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -143,14 +167,14 @@ public class NaverSearchCountService {
         if (searchCountEntityOptional.isPresent()) {
             // 데이터가 존재하면, 해당 엔티티를 불러와서 maxSearch를 30으로 변경
             NaverSearchCountEntity existingEntity = searchCountEntityOptional.get();
-            existingEntity.setMaxSearch(5);
+            existingEntity.setMaxSearch(3);
             naverSearchCountRepository.save(existingEntity);
         } else {
             // 데이터가 없으면, 오늘 날짜로 새 엔티티 생성 후 maxSearch를 30으로 설정하여 저장
             NaverSearchCountEntity newEntity = new NaverSearchCountEntity();
             newEntity.setUserIdx(userIdx);
             newEntity.setDate(currentDateString);
-            newEntity.setMaxSearch(5); // maxSearch를 30으로 설정
+            newEntity.setMaxSearch(3); // maxSearch를 30으로 설정
 
             // 필요한 다른 필드를 설정
             newEntity.setSearchCount(0);  // 예시로 searchCount는 0으로 설정 (필요에 맞게 조정)

@@ -127,6 +127,10 @@ public class UserService {
             updatedUserEntity.setUserPassword(password);
             int userIdx = updatedUserEntity.getUserIdx();
             LocalDate date = LocalDate.now();
+            if ("0".equals(updatedUserEntity.getGrade())) {
+                searchcountService.handlegrade0(userIdx, date);
+                naverSearchCountService.handlegrade0(userIdx, date);
+            }
             if ("1".equals(updatedUserEntity.getGrade())) {
                 searchcountService.handlegrade1(userIdx, date);
                 naverSearchCountService.handlegrade1(userIdx, date);

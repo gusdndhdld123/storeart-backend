@@ -249,6 +249,7 @@ public class UserController {
 
             // 2. 액세스 토큰을 사용해 사용자 정보 요청
             Map<String, Object> userInfo = getUserInfoFromKakao(accessToken);
+            System.out.println(userInfo);
             System.out.println("accessToken 발급 완료 : " + accessToken);
             // 3. 카카오 이메일과 닉네임 추출
             Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
@@ -307,6 +308,8 @@ public class UserController {
 
             // 3. 카카오 이메일 추출
             String kakaoEmail = (String) ((Map<String, Object>) userInfo.get("kakao_account")).get("email");
+            String name = (String) ((Map<String, Object>) userInfo.get("kakao_account")).get("name");
+            String phonenumber = (String) ((Map<String, Object>) userInfo.get("kakao_account")).get("phone_number");
             Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
             Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
             String nickname = (String) profile.get("nickname");
@@ -329,7 +332,8 @@ public class UserController {
                 // 6. 기존 사용자가 없다면 회원가입 처리
                 UserDTO newUserDTO = new UserDTO();
                 newUserDTO.setUserEmail(kakaoEmail);
-                newUserDTO.setUserName(nickname);
+                newUserDTO.setUserName(name);
+                newUserDTO.setUserPhone(phonenumber);
                 newUserDTO.setGrade("1");
                 // UserDTO를 UserEntity로 변환
                 UserEntity newUserEntity = modelMapper.map(newUserDTO, UserEntity.class);
@@ -344,7 +348,7 @@ public class UserController {
                     // **Default SearchCount 초기화 호출**
                     int userIdx = savedUserEntity.get().getUserIdx(); // 저장된 UserEntity의 userIdx
                     int grade = 1; // 기본 등급 (예: 1)
-                    Integer maxSearch = 5; // 기본 최대 검색 횟수
+                    Integer maxSearch = 3; // 기본 최대 검색 횟수
                     String currentDate = LocalDate.now().toString(); // 오늘 날짜
 
                     searchcountService.insertDefaultSearchCount(userIdx, grade, maxSearch, currentDate);

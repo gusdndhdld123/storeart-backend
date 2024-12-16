@@ -36,7 +36,8 @@ public interface SearchcountRepository extends JpaRepository<SearchCountEntity, 
     List<SearchCountEntity> findByUserIdx(int userIdx);
 
     // userIdx와 현재 날짜 기준으로 가장 가까운 날짜를 찾는 쿼리
-    @Query("SELECT s.date FROM SearchCountEntity s WHERE s.userIdx = :userIdx AND s.date <= :currentDate ORDER BY s.date DESC")
+    @Query(value = "SELECT s.date FROM searchcount s WHERE s.user_idx = :userIdx AND s.date <= :currentDate ORDER BY s.date DESC LIMIT 1", nativeQuery = true)
     Optional<String> findClosestDate(@Param("userIdx") int userIdx, @Param("currentDate") String currentDate);
+
 
 }

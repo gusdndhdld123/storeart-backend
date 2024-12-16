@@ -290,75 +290,70 @@ public class NaverController {
     public ResponseEntity<Map<String, Object>> getNowSearch2(@RequestBody Map<String, String> request) {
 
         int rank = 0;
-        JsonNode total = null;  // total 초기화
+        JsonNode total = null;
         String keyword = request.get("keyword");
-        String stname = request.get("stname");  // "포함되는" stname 값 추가
-
+        String stname = request.get("stname");
 
         RestTemplate restTemplate = new RestTemplate();
 
-        // matchedItem과 rank를 배열로 선언
         List<JsonNode> matchedItems = new ArrayList<>();
         List<Integer> ranks = new ArrayList<>();
 
-        // 반복문으로 Naver API 요청을 10번씩 시도
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Naver-Client-Id", "7rmKKJiRBx4F3LGQNYUW");
+        headers.set("X-Naver-Client-Secret", "6CieeCU14C");
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
         for (int start = 1; start <= 400; start += 100) {
             String apiUrl = "https://openapi.naver.com/v1/search/shop.json?query=" + keyword + "&start=" + start + "&display=100";
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("X-Naver-Client-Id", "7rmKKJiRBx4F3LGQNYUW");
-            headers.set("X-Naver-Client-Secret", "6CieeCU14C");
-
-            HttpEntity<String> entity = new HttpEntity<>(headers);
 
             try {
                 ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, String.class);
 
                 if (response.getStatusCode() == HttpStatus.OK) {
-
                     String body = response.getBody();
-                    // JSON 데이터 파싱
                     ObjectMapper objectMapper = new ObjectMapper();
                     JsonNode root = objectMapper.readTree(body);
                     JsonNode items = root.path("items");
-                    total = root.path("total");  // total 저장
+                    total = root.path("total");
 
-                    // 검색 결과가 없으면 바로 응답
                     if (items.size() == 0) {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                .body(Map.of("rank", 0, "matchedItem", null, "message", "해당 상품이 400위 밖에 있거나 검색 결과에서 찾을 수 없습니다."));
+                        break;
                     }
 
-                    // 검색 결과 중 stname이 포함된 항목들을 찾기
                     for (int j = 0; j < items.size(); j++) {
                         JsonNode item = items.get(j);
-                        // 상품명(stname)이 포함되는지 체크
                         if (item.path("mallName").asText().contains(stname)) {
-                            matchedItems.add(item);  // matchedItems 배열에 항목 추가
+                            matchedItems.add(item);
                             rank = start + j;
-                            ranks.add(rank);  // rank 배열에 순위 추가
+                            ranks.add(rank);
                         }
-                    }
-
-                    // 만약 matchedItems에 하나 이상의 항목이 추가되었다면 종료
-                    if (!matchedItems.isEmpty()) {
-                        break;
                     }
                 }
             } catch (Exception e) {
                 System.err.println("Error during API call or JSON parsing: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("message", "API 요청 중 오류가 발생했습니다."));
             }
         }
 
-        // matchedItems가 비어있으면 404로 처리
         if (matchedItems.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("rank", ranks, "matchedItem", matchedItems, "message", "해당 상품이 400위 밖에 있거나 검색 결과에서 찾을 수 없습니다."));
+                    .body(Map.of(
+                            "rank", ranks,
+                            "matchedItem", matchedItems,
+                            "total", total == null ? 0 : total.asInt(),
+                            "message", "해당 상품이 400위 밖에 있거나 검색 결과에서 찾을 수 없습니다."
+                    ));
         }
 
-        // 정상적으로 아이템을 찾은 경우
-        return ResponseEntity.ok(Map.of("rank", ranks, "matchedItem", matchedItems, "total", total));
+        return ResponseEntity.ok(Map.of(
+                "rank", ranks,
+                "matchedItem", matchedItems,
+                "total", total
+        ));
     }
+
 
 
 

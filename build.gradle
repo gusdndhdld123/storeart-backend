@@ -49,6 +49,8 @@ dependencies {
     //스프링 시큐리티
 //    implementation 'org.springframework.boot:spring-boot-starter-security'
 //    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    //s3 용
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {

@@ -20,7 +20,7 @@ public class WebDriverConfig {
 //            options.addArguments("--headless");
 //            options.setBinary("/usr/bin/google-chrome-stable");  // 리눅스용 경로.
 
-            options.setBinary("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe");
+            options.setBinary("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe");//윈도우용 경로
             driver = new ChromeDriver(options);
             driver.manage().window().maximize();
         }

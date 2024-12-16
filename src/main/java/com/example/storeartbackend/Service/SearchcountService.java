@@ -121,6 +121,32 @@ public class SearchcountService {
     }
     //maxcount를 변경
 
+    public void handlegrade0(int userIdx, LocalDate currentDate) {
+        // 현재 날짜를 "yyyy-MM-dd" 형식으로 변환
+        String currentDateString = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        // userIdx와 currentDate로 검색
+        Optional<SearchCountEntity> searchCountEntityOptional = searchcountRepository.findSearchCountByUserIdxAndDate(userIdx, currentDateString);
+
+        if (searchCountEntityOptional.isPresent()) {
+            // 데이터가 존재하면, 해당 엔티티를 불러와서 maxSearch를 30으로 변경
+            SearchCountEntity existingEntity = searchCountEntityOptional.get();
+            existingEntity.setMaxSearch(0);
+            searchcountRepository.save(existingEntity);
+        } else {
+            // 데이터가 없으면, 오늘 날짜로 새 엔티티 생성 후 maxSearch를 30으로 설정하여 저장
+            SearchCountEntity newEntity = new SearchCountEntity();
+            newEntity.setUserIdx(userIdx);
+            newEntity.setDate(currentDateString);
+            newEntity.setMaxSearch(0); // maxSearch를 30으로 설정
+
+            // 필요한 다른 필드를 설정
+            newEntity.setSearchCount(0);  // 예시로 searchCount는 0으로 설정 (필요에 맞게 조정)
+
+            searchcountRepository.save(newEntity);
+        }
+    }
+
     public void handlegrade1(int userIdx, LocalDate currentDate) {
         // 현재 날짜를 "yyyy-MM-dd" 형식으로 변환
         String currentDateString = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -131,14 +157,14 @@ public class SearchcountService {
         if (searchCountEntityOptional.isPresent()) {
             // 데이터가 존재하면, 해당 엔티티를 불러와서 maxSearch를 30으로 변경
             SearchCountEntity existingEntity = searchCountEntityOptional.get();
-            existingEntity.setMaxSearch(5);
+            existingEntity.setMaxSearch(3);
             searchcountRepository.save(existingEntity);
         } else {
             // 데이터가 없으면, 오늘 날짜로 새 엔티티 생성 후 maxSearch를 30으로 설정하여 저장
             SearchCountEntity newEntity = new SearchCountEntity();
             newEntity.setUserIdx(userIdx);
             newEntity.setDate(currentDateString);
-            newEntity.setMaxSearch(5); // maxSearch를 30으로 설정
+            newEntity.setMaxSearch(3); // maxSearch를 30으로 설정
 
             // 필요한 다른 필드를 설정
             newEntity.setSearchCount(0);  // 예시로 searchCount는 0으로 설정 (필요에 맞게 조정)

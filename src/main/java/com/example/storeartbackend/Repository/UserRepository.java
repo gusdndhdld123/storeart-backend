@@ -13,5 +13,5 @@ public interface UserRepository extends JpaRepository<UserEntity,Integer> {
     // 전체 조회
     List<UserEntity> findAll();
     Optional<UserEntity> findByUserId(String userId);
-
+    Optional<UserEntity> findByUserIdx(int userIdx);
 }

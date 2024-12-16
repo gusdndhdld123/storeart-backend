@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public interface NaverSearchCountRepository extends JpaRepository<NaverSearchCountEntity, Integer> {
     // 오늘 날짜와 userIdx로 검색 (없으면 기본값 삽입을 위해 Optional 사용)
     Optional<NaverSearchCountEntity> findByUserIdxAndDate(int userIdx, String date);
@@ -31,6 +32,7 @@ public interface NaverSearchCountRepository extends JpaRepository<NaverSearchCou
     List<SearchCountEntity> findByUserIdx(int userIdx);
 
     // userIdx와 현재 날짜 기준으로 가장 가까운 날짜를 찾는 쿼리
-    @Query("SELECT s.date FROM NaverSearchCountEntity s WHERE s.userIdx = :userIdx AND s.date <= :currentDate ORDER BY s.date DESC")
+    @Query(value = "SELECT s.date FROM naversearchcount s WHERE s.user_idx = :userIdx AND s.date <= :currentDate ORDER BY s.date DESC LIMIT 1", nativeQuery = true)
     Optional<String> findClosestDate(@Param("userIdx") int userIdx, @Param("currentDate") String currentDate);
+
 }
