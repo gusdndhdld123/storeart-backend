@@ -220,7 +220,7 @@ public class RankTrackingController {
 
             // 2. userIdx와 grade 추출
             Integer userIdx = claims.get("userIdx", Integer.class);
-            Integer grade = claims.get("grade", Integer.class);
+            String grade = claims.get("grade", String.class);
 
             // 3. 서비스 호출
             Map<String, Integer> slotCounts = rankTrackingService.getSlotCounts(userIdx, grade);

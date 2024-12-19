@@ -81,17 +81,23 @@ public class RankTrackingService {
         put(5, 20);
         put(6, 20);
     }};
+
     // nowCount와 maxCount 계산
-    public Map<String, Integer> getSlotCounts(Integer userIdx, Integer grade) {
-        if (grade < 0 || grade > 6) {
-            throw new IllegalArgumentException("유효하지 않은 등급입니다.");
-        }
+    public Map<String, Integer> getSlotCounts(Integer userIdx, String grade) {
 
         // nowCount 계산
         int nowCount = rankTrackingRepository.countByUserIdx(userIdx);
 
+        // grade를 Integer로 변환
+        int gradeKey;
+        try {
+            gradeKey = Integer.parseInt(grade); // String -> Integer 변환
+        } catch (NumberFormatException e) {
+            gradeKey = 0; // 변환 실패 시 기본값 0
+        }
+
         // maxCount 가져오기
-        int maxCount = MAX_COUNT_BY_GRADE.getOrDefault(grade, 0);
+        int maxCount = MAX_COUNT_BY_GRADE.getOrDefault(gradeKey, 0);
 
         // JSON 객체로 반환
         Map<String, Integer> result = new HashMap<>();
